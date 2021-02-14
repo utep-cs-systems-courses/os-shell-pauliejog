@@ -12,7 +12,7 @@ import re
 import time
 from lab_0 import my_read_line
 
-ps1 = '$'
+ps1 = '$'  # prompt
 
 while 1:
     os.write(1, ps1.encode())
