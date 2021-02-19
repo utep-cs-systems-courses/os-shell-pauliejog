@@ -12,7 +12,8 @@ import re
 import time
 from lab_0 import my_read_line
 
-ps1 = '$'  # prompt
+ps1 = '$ '  # prompt
+pid = os.getpid()               # get and remember pid
 
 while 1:
     os.write(1, ps1.encode())
@@ -23,7 +24,7 @@ while 1:
         os.write(2, 'Shell exited\n'.encode())
         sys.exit(1)
     # tokenize command
-    tkns = in_line.split(' ')
+    args = in_line.split()
 
     # fork a child
     rc = os.fork()
@@ -34,13 +35,13 @@ while 1:
     elif rc == 0:
         # child executes command
         for dir in re.split(':', os.environ['PATH']):   # try each directory
-            program = '%s/%s' % (dir, tkns[0])
+            program = '%s/%s' % (dir, args[0])
 
             try:
-                os.execve(program, tkns, os.environ)    # try to exec program
+                os.execve(program, args, os.environ)    # try to exec program
             except FileNotFoundError:
                 pass                                    # fail quietly
-        os.write(2, ('Child:    failed exec %s\n' % tkns[0]).encode())
+        os.write(2, ('Child:    failed exec %s\n' % args[0]).encode())
         sys.exit(1)  # terminate
 
     else:
